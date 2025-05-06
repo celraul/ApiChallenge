@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Cel.GameOfLife.Application\Cel.GameOfLife.Application.csproj" />
+		<ProjectReference Include="..\Cel.GameOfLife.Domain\Cel.GameOfLife.Domain.csproj" />
+		<ProjectReference Include="..\Cel.GameOfLife.Infra\Cel.GameOfLife.Infra.csproj" />
+	</ItemGroup>
+
+</Project>

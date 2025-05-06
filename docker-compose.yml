@@ -1,0 +1,26 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo-data:/data/db
+
+  gameoflifeapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=TestDocker
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    restart: always
+    container_name: GameOfLifeApi
+
+volumes:
+  mongo-data:
