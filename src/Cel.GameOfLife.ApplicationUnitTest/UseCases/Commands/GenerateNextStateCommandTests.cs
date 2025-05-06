@@ -39,7 +39,7 @@ public class GenerateNextStateCommandTests
         var command = new GenerateNextStateCommand(id, 1);
         _repository.Setup(x => x.GetById(id)).ReturnsAsync(new Board { Id = id, Name = "Name", Field = initial, CurrentState = initial });
 
-        _gameOfLifeService.Setup(x => x.NextState(initial, 1)).Returns(expected);
+        _gameOfLifeService.Setup(x => x.NextState(initial, 1)).ReturnsAsync(expected);
 
         // Act
         List<List<bool>> result = await _handler.Handle(command, CancellationToken.None);

@@ -1,6 +1,7 @@
 ﻿using Cel.GameOfLife.Application.Consts;
 using Cel.GameOfLife.Application.Extensions;
 using Cel.GameOfLife.Application.Interfaces;
+using System.Threading.Tasks;
 
 namespace Cel.GameOfLife.Application.Services;
 
@@ -21,10 +22,10 @@ namespace Cel.GameOfLife.Application.Services;
 /// </summary>
 public class GameOfLifeService : IGameOfLifeService
 {
-    public List<List<bool>> NextState(List<List<bool>> currentState, int rounds = 1)
+    public async Task<List<List<bool>>> NextState(List<List<bool>> currentState, int rounds = 1)
     {
         for (int i = 0; i < rounds; i++)
-            currentState = GetNextState(currentState);
+            currentState = await GetNextStateAsync(currentState);
 
         return currentState;
     }
@@ -34,7 +35,7 @@ public class GameOfLifeService : IGameOfLifeService
     /// </summary>
     /// <param name="currentState"></param>
     /// <returns></returns>
-    public List<List<bool>> FinalState(List<List<bool>> currentState)
+    public async Task<List<List<bool>>> FinalState(List<List<bool>> currentState)
     {
         int count = 0;
         for (int i = 0; i < GameOfLifeConsts.MaxRounds; i++)
@@ -42,7 +43,7 @@ public class GameOfLifeService : IGameOfLifeService
             if (currentState.IsAllDead())
                 break;
 
-            List<List<bool>> nextState = GetNextState(currentState);
+            List<List<bool>> nextState = await GetNextStateAsync(currentState);
             if (currentState.AreEqual(nextState))
                 break;
 
@@ -56,7 +57,38 @@ public class GameOfLifeService : IGameOfLifeService
         return currentState;
     }
 
-    private static List<List<bool>> GetNextState(List<List<bool>> currentState)
+    private async Task<List<List<bool>>> GetNextStateAsync(List<List<bool>> currentState)
+    {
+        int rows = currentState.Count;
+        int cols = currentState[0].Count;
+
+        var rowTasks = new List<Task<List<bool>>>(rows);
+
+        for (int row = 0; row < rows; row++)
+        {
+            int currentRow = row;
+            rowTasks.Add(Task.Run(() =>
+            {
+                var newRow = new List<bool>(cols);
+                for (int col = 0; col < cols; col++)
+                {
+                    int liveNeighbors = CountLiveNeighbors(currentState, currentRow, col);
+
+                    bool isAlive = currentState[currentRow][col];
+                    bool nextState = isAlive ? (liveNeighbors == 2 || liveNeighbors == 3) :
+                                                (liveNeighbors == 3);
+                    newRow.Add(nextState);
+                }
+                return newRow;
+            }));
+        }
+
+        var next = await Task.WhenAll(rowTasks);
+        return next.ToList();
+    }
+
+    // Just for performace test purposes
+    public static List<List<bool>> GetNextState2(List<List<bool>> currentState)
     {
         int rows = currentState.Count;
         int cols = currentState[0].Count;

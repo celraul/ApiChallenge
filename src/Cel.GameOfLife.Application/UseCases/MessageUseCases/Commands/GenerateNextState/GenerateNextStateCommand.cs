@@ -17,7 +17,7 @@ public class GenerateNextStateCommandHandler(IRepository<Board> repository, IGam
         Board board = await _repository.GetById(request.Id) ??
             throw new KeyNotFoundException("Board not found."); // It can be improve using result patterns
 
-        board.CurrentState = _service.NextState(board.CurrentState, request.Count);
+        board.CurrentState = await _service.NextState(board.CurrentState, request.Count);
         await _repository.UpdateAsync(board);
 
         return board.CurrentState;

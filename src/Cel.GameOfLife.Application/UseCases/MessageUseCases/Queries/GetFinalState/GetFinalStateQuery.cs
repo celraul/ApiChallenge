@@ -22,6 +22,6 @@ public class GetFinalStateQueryHandler : IRequestHandler<GetFinalStateQuery, Lis
         Board board = await _repository.GetById(request.Id) ??
             throw new KeyNotFoundException("Board not found.");
 
-        return _service.FinalState(board.CurrentState);
+        return await _service.FinalState(board.CurrentState);
     }
 }

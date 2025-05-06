@@ -2,6 +2,6 @@
 
 public interface IGameOfLifeService
 {
-    List<List<bool>> NextState(List<List<bool>> currentState, int rounds = 1);
-    List<List<bool>> FinalState(List<List<bool>> currentState);
+    Task<List<List<bool>>> NextState(List<List<bool>> currentState, int rounds = 1);
+    Task<List<List<bool>>> FinalState(List<List<bool>> currentState);
 }

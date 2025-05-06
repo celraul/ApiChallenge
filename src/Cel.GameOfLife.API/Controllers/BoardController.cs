@@ -33,7 +33,7 @@ public class BoardController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// It genereates and returns a next state for the board.
+    /// It generates and returns a next state for the board.
     /// </summary>
     /// <param name="id">Id of board</param>
     /// <returns>Next state.</returns>
@@ -47,7 +47,7 @@ public class BoardController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// It genereates and returns a next state for the board.
+    /// It generates and returns a next state for the board.
     /// </summary>
     /// <param name="id">Id of board</param>
     /// <param name="count">Count to generete next states.</param>
