@@ -1,7 +1,6 @@
 ﻿using Cel.GameOfLife.Application.Consts;
 using Cel.GameOfLife.Application.Extensions;
 using Cel.GameOfLife.Application.Interfaces;
-using System.Threading.Tasks;
 
 namespace Cel.GameOfLife.Application.Services;
 
@@ -57,6 +56,11 @@ public class GameOfLifeService : IGameOfLifeService
         return currentState;
     }
 
+    /// <summary>
+    /// It returns the next state of the board. interate over rows and columns and apply the rules of the Game of Life.
+    /// </summary>
+    /// <param name="currentState"></param>
+    /// <returns></returns>
     private async Task<List<List<bool>>> GetNextStateAsync(List<List<bool>> currentState)
     {
         int rows = currentState.Count;
@@ -74,6 +78,7 @@ public class GameOfLifeService : IGameOfLifeService
                 {
                     int liveNeighbors = CountLiveNeighbors(currentState, currentRow, col);
 
+                    // Apply the rules of the Game of Life
                     bool isAlive = currentState[currentRow][col];
                     bool nextState = isAlive ? (liveNeighbors == 2 || liveNeighbors == 3) :
                                                 (liveNeighbors == 3);
