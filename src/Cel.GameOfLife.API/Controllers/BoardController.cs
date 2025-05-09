@@ -33,32 +33,32 @@ public class BoardController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// It genereates and returns a next state for the board.
+    /// It generates and returns a next state for the board.
     /// </summary>
     /// <param name="id">Id of board</param>
-    /// <returns>Next state.</returns>
+    /// <returns>Returns board with the next state.</returns>
     [HttpPut("{id}/next")]
-    [ProducesResponseType(typeof(ApiResponse<List<List<bool>>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<BoardModel >), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id)
     {
-        List<List<bool>> nextState = await _mediator.Send(new GenerateNextStateCommand(id));
+        BoardModel nextState = await _mediator.Send(new GenerateNextStateCommand(id));
 
-        return Ok(new ApiResponse<List<List<bool>>>(nextState));
+        return Ok(new ApiResponse<BoardModel>(nextState));
     }
 
     /// <summary>
-    /// It genereates and returns a next state for the board.
+    /// It generates and returns a next state for the board.
     /// </summary>
     /// <param name="id">Id of board</param>
     /// <param name="count">Count to generete next states.</param>
-    /// <returns>Next state.</returns>
+    /// <returns>Returns board with the next state.</returns>
     [HttpPut("{id}/next/{count}")]
-    [ProducesResponseType(typeof(ApiResponse<List<List<bool>>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id, int count)
     {
-        List<List<bool>> nextState = await _mediator.Send(new GenerateNextStateCommand(id, count));
+        BoardModel nextState = await _mediator.Send(new GenerateNextStateCommand(id, count));
 
-        return Ok(new ApiResponse<List<List<bool>>>(nextState));
+        return Ok(new ApiResponse<BoardModel>(nextState));
     }
 
     /// <summary>

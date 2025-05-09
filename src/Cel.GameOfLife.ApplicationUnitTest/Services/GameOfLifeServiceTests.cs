@@ -14,7 +14,7 @@ public class GameOfLifeServiceTests
     }
 
     [Fact]
-    public void NextState_ShouldReturnNextState()
+    public async Task NextState_ShouldReturnNextState()
     {
         // Arrange
         // Initial blinker (3x3 grid)
@@ -40,7 +40,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        var result = _gameOfLifeService.NextState(initial);
+        List<List<bool>> result = await _gameOfLifeService.NextState(initial);
 
         // Assert
         result.Should().NotBeNull();
@@ -48,7 +48,71 @@ public class GameOfLifeServiceTests
     }
 
     [Fact]
-    public void FinalState_ShouldReturnTheFinalState()
+    public async Task NextState_ShouldReturnNextStateForBigOne()
+    {
+        // Arrange
+        var initial = new List<List<bool>>();
+        var rand = new Random();
+        int size = 1000;
+
+        for (int i = 0; i < size; i++)
+        {
+            var row = new List<bool>();
+            for (int j = 0; j < size; j++)
+                row.Add(rand.Next(2) == 1);
+
+            initial.Add(row);
+        }
+
+        Board board = new()
+        {
+            Id = "boardId",
+            Name = "Name",
+            Field = initial,
+            CurrentState = initial
+        };
+
+        // Act
+        List<List<bool>> result = await _gameOfLifeService.NextState(initial);
+
+        // Assert
+        result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void NextState_ShouldReturnNextStateForBigOne2()
+    {
+        // Arrange
+        var initial = new List<List<bool>>();
+        var rand = new Random();
+        int size = 1000;
+
+        for (int i = 0; i < size; i++)
+        {
+            var row = new List<bool>();
+            for (int j = 0; j < size; j++)
+                row.Add(rand.Next(2) == 1);
+
+            initial.Add(row);
+        }
+
+        Board board = new()
+        {
+            Id = "boardId",
+            Name = "Name",
+            Field = initial,
+            CurrentState = initial
+        };
+
+        // Act
+        List<List<bool>> result = GameOfLifeService.GetNextState2(initial);
+
+        // Assert
+        result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task FinalState_ShouldReturnTheFinalState()
     {
         // Arrange
         // Initial blinker (3x3 grid)
@@ -74,7 +138,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        var result = _gameOfLifeService.FinalState(initial);
+        List<List<bool>> result = await _gameOfLifeService.FinalState(initial);
 
         // Assert
         result.Should().NotBeNull();
@@ -102,10 +166,10 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        Func<List<List<bool>>> act = () => _gameOfLifeService.FinalState(initial);
+        Func<Task<List<List<bool>>>> act = async () => await _gameOfLifeService.FinalState(initial);
 
         // Assert
-        act.Should().Throw<Exception>()
+        act.Should().ThrowAsync<Exception>()
            .WithMessage($"board doesn't go to conclusion after {GameOfLifeConsts.MaxRounds} attempts.");
     }
 
