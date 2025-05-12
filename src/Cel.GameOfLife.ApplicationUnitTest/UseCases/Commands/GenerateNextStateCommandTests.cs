@@ -46,10 +46,13 @@ public class GenerateNextStateCommandTests
         BoardModel result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
+        result.Should().BeNull(); // TO test CI
+
         result.Should().NotBeNull();
         result.CurrentState.Should().BeEquivalentTo(expected);
         result.Generation.Should().Be(2);
 
         _gameOfLifeService.Verify(x => x.NextState(initial, 1), Times.Once);
+
     }
 }
