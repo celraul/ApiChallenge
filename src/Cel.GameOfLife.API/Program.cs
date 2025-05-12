@@ -2,6 +2,7 @@ using Cel.GameOfLife.Infra;
 using Cel.GameOfLife.Application;
 using Cel.GameOfLife.API.Middlewares;
 using Cel.GameOfLife.API.Extensions;
+using Cel.GameOfLife.API.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -16,7 +17,10 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+    options.Filters.Add<MemoryCacheActionFilter>()
+);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 
@@ -32,7 +36,6 @@ app.UseCors("CorsPolicy");
 //if (app.Environment.IsDevelopment()) { }
 app.UseSwagger();
 app.UseSwaggerUI();
-
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
