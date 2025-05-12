@@ -52,6 +52,6 @@ jobs:
       uses: dorny/test-reporter@v1
       if: always()
       with:
-        name: Unit Tests
+        name: Unit Tests Report results
         path: src/Cel.GameOfLife.ApplicationUnitTest/TestResults/*.trx
         reporter: dotnet-trx
