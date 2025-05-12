@@ -20,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.GameOfLife.ApplicationUnitTest", "Cel.GameOfLife.ApplicationUnitTest\Cel.GameOfLife.ApplicationUnitTest.csproj", "{FC53706F-A7AD-4FF6-929F-F2DA557E5798}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IA", "IA", "{63411BC8-8A5E-46CD-92D5-A3976B1A66E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IA.Cel.TrainingModel.App", "IA.Cel.TrainingModel.App\IA.Cel.TrainingModel.App.csproj", "{4891FBF1-1626-4A6F-B6A8-33A2A1FCFDEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,12 +50,17 @@ Global
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4891FBF1-1626-4A6F-B6A8-33A2A1FCFDEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4891FBF1-1626-4A6F-B6A8-33A2A1FCFDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4891FBF1-1626-4A6F-B6A8-33A2A1FCFDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4891FBF1-1626-4A6F-B6A8-33A2A1FCFDEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{4891FBF1-1626-4A6F-B6A8-33A2A1FCFDEB} = {63411BC8-8A5E-46CD-92D5-A3976B1A66E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {160137E4-32F1-4694-A36A-445806AA8741}
