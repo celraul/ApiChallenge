@@ -54,7 +54,7 @@ public class GameOfLifeServiceTests
         // Arrange
         var initial = new List<List<bool>>();
         var rand = new Random();
-        int size = 1000;
+        int size = 10000;
 
         for (int i = 0; i < size; i++)
         {
