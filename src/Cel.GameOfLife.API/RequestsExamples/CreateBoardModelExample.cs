@@ -10,12 +10,12 @@ public class CreateBoardModelExample : IExamplesProvider<CreateBoardModel>
         return new CreateBoardModel
         {
             Name = "Sample test",
-            BoardState = new()
-            {
-                new() { true, false, false },
-                new() { false, true,  false },
-                new() { false, false, true }
-            }
+            BoardState =
+            [
+                [true, false, false],
+                [false, true, false],
+                [false, false, true]
+            ]
         };
     }
 }

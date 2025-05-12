@@ -23,17 +23,17 @@ public class GenerateNextStateCommandTests
     {
         // Arrange
         // Initial blinker (3x3 grid)
-        var initial = new List<List<bool>>
+        bool[][] initial =
         {
-            new() { false, false, false },
-            new() { true,  true,  true },
-            new() { false, false, false }
+            [ false, false, false ],
+            [ true,  true,  true  ],
+            [ false, false, false ]
         };
-        var expected = new List<List<bool>>
+        bool[][] expected =
         {
-            new() { false, true,  false },
-            new() { false, true,  false },
-            new() { false, true,  false }
+            [false, true,  false ],
+            [false, true,  false ],
+            [false, true,  false ]
         };
 
         string id = "boardId";
@@ -51,6 +51,5 @@ public class GenerateNextStateCommandTests
         result.Generation.Should().Be(2);
 
         _gameOfLifeService.Verify(x => x.NextState(initial, 1), Times.Once);
-
     }
 }
