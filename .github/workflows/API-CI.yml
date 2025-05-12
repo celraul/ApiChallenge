@@ -41,11 +41,11 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: game-of-life-api-unit-test-results/*.trx
+        path: src/Cel.GameOfLife.ApplicationUnitTest/TestResults/*.trx
 
     - name: Upload code coverage
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: code-coverage
-        path: game-of-life-api-unit-test-results/coverage.cobertura.xml
+        path: src/Cel.GameOfLife.ApplicationUnitTest/TestResults/coverage.cobertura.xml
