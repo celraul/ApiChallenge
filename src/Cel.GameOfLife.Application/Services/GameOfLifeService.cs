@@ -21,6 +21,9 @@ namespace Cel.GameOfLife.Application.Services;
 /// </summary>
 public class GameOfLifeService : IGameOfLifeService
 {
+    private readonly int[] NumbersOfNeighborsToKeepAlive = [2, 3];
+    private readonly int NumbersOfNeighborsToWakeUp = 3;
+
     public async Task<List<List<bool>>> NextState(List<List<bool>> currentState, int rounds = 1)
     {
         for (int i = 0; i < rounds; i++)
@@ -80,8 +83,8 @@ public class GameOfLifeService : IGameOfLifeService
 
                     // Apply the rules of the Game of Life
                     bool isAlive = currentState[currentRow][col];
-                    bool nextState = isAlive ? (liveNeighbors == 2 || liveNeighbors == 3) :
-                                                (liveNeighbors == 3);
+                    bool nextState = isAlive ? NumbersOfNeighborsToKeepAlive.Contains(liveNeighbors) :
+                                                liveNeighbors == NumbersOfNeighborsToWakeUp;
                     newRow.Add(nextState);
                 }
                 return newRow;
