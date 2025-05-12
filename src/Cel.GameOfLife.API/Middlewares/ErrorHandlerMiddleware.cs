@@ -36,7 +36,7 @@ public class ErrorHandlerMiddleware
             case ValidationException:
                 apiResponse.errors = ((BaseException)exception).Errors;
                 break;
-            case KeyNotFoundException:
+            case NotFoundException:
                 statusCode = (int)HttpStatusCode.NotFound;
                 apiResponse.errors = ((BaseException)exception).Errors;
                 break;

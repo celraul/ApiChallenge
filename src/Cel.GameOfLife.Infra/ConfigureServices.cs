@@ -1,5 +1,6 @@
 ﻿using Cel.GameOfLife.Application.Interfaces;
 using Cel.GameOfLife.Domain.Entities;
+using Cel.GameOfLife.Infra.Cache;
 using Cel.GameOfLife.Infra.Mongo;
 using Cel.GameOfLife.Infra.Options;
 using Cel.GameOfLife.Infra.Repositories;
@@ -18,7 +19,8 @@ public static class ConfigureServices
     public static IServiceCollection AddInfraServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMongo(configuration)
-            .AddRepositories();
+            .AddRepositories()
+            .AddCache();
 
         return services;
     }
@@ -31,7 +33,7 @@ public static class ConfigureServices
     }
 
     private static IServiceCollection AddMongo(this IServiceCollection services, IConfiguration configuration)
-    
+
     {
         services.Configure<MongoSettings>(option => configuration.GetSection(nameof(MongoSettings)).Bind(option));
 
@@ -47,6 +49,14 @@ public static class ConfigureServices
 
         var ingnoreExtraElements = new ConventionPack { new IgnoreExtraElementsConvention(true) };
         ConventionRegistry.Register("Ignore extra elements", ingnoreExtraElements, t => true);
+
+        return services;
+    }
+
+    private static IServiceCollection AddCache(this IServiceCollection services)
+    {
+        services.AddMemoryCache();
+        services.AddSingleton<IAppMemoryCache, AppMemoryCache>();
 
         return services;
     }

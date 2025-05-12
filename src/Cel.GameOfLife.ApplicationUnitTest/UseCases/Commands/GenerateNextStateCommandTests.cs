@@ -1,4 +1,5 @@
 ﻿using Cel.GameOfLife.Application.Interfaces;
+using Cel.GameOfLife.Application.Models;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.GenerateNextState;
 using Cel.GameOfLife.Domain.Entities;
 
@@ -22,31 +23,32 @@ public class GenerateNextStateCommandTests
     {
         // Arrange
         // Initial blinker (3x3 grid)
-        var initial = new List<List<bool>>
+        bool[][] initial =
         {
-            new() { false, false, false },
-            new() { true,  true,  true },
-            new() { false, false, false }
+            [ false, false, false ],
+            [ true,  true,  true  ],
+            [ false, false, false ]
         };
-       var expected = new List<List<bool>>
+        bool[][] expected =
         {
-            new() { false, true,  false },
-            new() { false, true,  false },
-            new() { false, true,  false }
+            [false, true,  false ],
+            [false, true,  false ],
+            [false, true,  false ]
         };
 
         string id = "boardId";
         var command = new GenerateNextStateCommand(id, 1);
-        _repository.Setup(x => x.GetById(id)).ReturnsAsync(new Board { Id = id, Name = "Name", Field = initial, CurrentState = initial });
+        _repository.Setup(x => x.GetById(id)).ReturnsAsync(new Board { Id = id, Name = "Name", Field = initial, CurrentState = initial, Generation = 1 });
 
         _gameOfLifeService.Setup(x => x.NextState(initial, 1)).ReturnsAsync(expected);
 
         // Act
-        List<List<bool>> result = await _handler.Handle(command, CancellationToken.None);
+        BoardModel result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(expected);
+        result.CurrentState.Should().BeEquivalentTo(expected);
+        result.Generation.Should().Be(2);
 
         _gameOfLifeService.Verify(x => x.NextState(initial, 1), Times.Once);
     }

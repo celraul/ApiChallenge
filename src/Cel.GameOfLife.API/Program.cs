@@ -2,6 +2,11 @@ using Cel.GameOfLife.Infra;
 using Cel.GameOfLife.Application;
 using Cel.GameOfLife.API.Middlewares;
 using Cel.GameOfLife.API.Extensions;
+using Cel.GameOfLife.API.ActionFilters;
+using Cel.GameOfLife.API.Conventions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Cel.GameOfLife.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -16,7 +21,19 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<MemoryCacheActionFilter>();
+
+    // default response type for the documentation.
+    options.Conventions.Add(new MultipleProducesResponseTypeConvention(
+        (StatusCodes.Status400BadRequest, typeof(ApiResponse<string>)),
+        (StatusCodes.Status401Unauthorized, typeof(ApiResponse<string>)),
+        (StatusCodes.Status404NotFound, typeof(ApiResponse<string>)),
+        (StatusCodes.Status500InternalServerError, typeof(ApiResponse<string>))
+    ));
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 
@@ -32,7 +49,6 @@ app.UseCors("CorsPolicy");
 //if (app.Environment.IsDevelopment()) { }
 app.UseSwagger();
 app.UseSwaggerUI();
-
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 

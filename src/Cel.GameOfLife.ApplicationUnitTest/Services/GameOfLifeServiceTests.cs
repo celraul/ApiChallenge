@@ -1,6 +1,7 @@
 ﻿using Cel.GameOfLife.Application.Consts;
 using Cel.GameOfLife.Application.Services;
 using Cel.GameOfLife.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Cel.GameOfLife.ApplicationUnitTest.Services;
 
@@ -18,17 +19,18 @@ public class GameOfLifeServiceTests
     {
         // Arrange
         // Initial blinker (3x3 grid)
-        var initial = new List<List<bool>>()
+        bool[][] initial =
          {
-            new() { false, false, false },
-            new() { true,  true,  true },
-            new() { false, false, false }
-         };
-        var expected = new List<List<bool>>()
+           [false, false, false],
+           [true,  true,  true],
+           [false, false, false]
+        };
+
+        bool[][] expected =
         {
-            new() { false, true,  false },
-            new() { false, true,  false },
-            new() { false, true,  false }
+            [ false, true, false ],
+            [ false, true, false ],
+            [ false, true, false ]
         };
 
         Board board = new()
@@ -40,7 +42,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        List<List<bool>> result = await _gameOfLifeService.NextState(initial);
+        bool[][] result = await _gameOfLifeService.NextState(initial);
 
         // Assert
         result.Should().NotBeNull();
@@ -51,17 +53,17 @@ public class GameOfLifeServiceTests
     public async Task NextState_ShouldReturnNextStateForBigOne()
     {
         // Arrange
-        var initial = new List<List<bool>>();
-        var rand = new Random();
         int size = 1000;
+        bool[][] initial = new bool[size][];
+        var rand = new Random();
 
         for (int i = 0; i < size; i++)
         {
-            var row = new List<bool>();
+            bool[] col = new bool[size];
             for (int j = 0; j < size; j++)
-                row.Add(rand.Next(2) == 1);
+                col[j] = (rand.Next(2) == 1);
 
-            initial.Add(row);
+            initial[i] = col;
         }
 
         Board board = new()
@@ -73,39 +75,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        List<List<bool>> result = await _gameOfLifeService.NextState(initial);
-
-        // Assert
-        result.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void NextState_ShouldReturnNextStateForBigOne2()
-    {
-        // Arrange
-        var initial = new List<List<bool>>();
-        var rand = new Random();
-        int size = 1000;
-
-        for (int i = 0; i < size; i++)
-        {
-            var row = new List<bool>();
-            for (int j = 0; j < size; j++)
-                row.Add(rand.Next(2) == 1);
-
-            initial.Add(row);
-        }
-
-        Board board = new()
-        {
-            Id = "boardId",
-            Name = "Name",
-            Field = initial,
-            CurrentState = initial
-        };
-
-        // Act
-        List<List<bool>> result = GameOfLifeService.GetNextState2(initial);
+        bool[][] result = await _gameOfLifeService.NextState(initial);
 
         // Assert
         result.Should().NotBeNull();
@@ -116,17 +86,17 @@ public class GameOfLifeServiceTests
     {
         // Arrange
         // Initial blinker (3x3 grid)
-        var initial = new List<List<bool>>()
+        bool[][] initial =
         {
-            new() { true, false, false },
-            new() { false,  true,  false },
-            new() { false, false, true }
+            [ true, false, false ],
+            [ false, true, false ],
+            [ false, false, true ]
         };
-        var expectedFinal = new List<List<bool>>()
+        bool[][] expectedFinal =
         {
-            new() { false, false,  false },
-            new() { false, false,  false },
-            new() { false, false,  false }
+            [false, false, false ],
+            [false, false, false ],
+            [false, false, false ]
         };
 
         Board board = new()
@@ -138,7 +108,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        List<List<bool>> result = await _gameOfLifeService.FinalState(initial);
+        bool[][] result = await _gameOfLifeService.FinalState(initial);
 
         // Assert
         result.Should().NotBeNull();
@@ -150,11 +120,11 @@ public class GameOfLifeServiceTests
     {
         // Arrange
         // Initial blinker (3x3 grid)
-        var initial = new List<List<bool>>
+        bool[][] initial =
         {
-           new() { false, false, false },
-           new() { true,  true,  true },
-           new() { false, false, false }
+           [ false, false, false],
+           [ true,  true,  true ],
+           [ false, false, false]
         };
 
         Board board = new()
@@ -166,7 +136,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        Func<Task<List<List<bool>>>> act = async () => await _gameOfLifeService.FinalState(initial);
+        Func<Task<bool[][]>> act = async () => await _gameOfLifeService.FinalState(initial);
 
         // Assert
         act.Should().ThrowAsync<Exception>()
@@ -178,18 +148,18 @@ public class GameOfLifeServiceTests
     [InlineData(0, 1, 3)]
     [InlineData(1, 1, 5)]
     [InlineData(2, 2, 1)]
-    public void CountLiveNeighbors_ShouldReturnNumberOfLiveNeighbors(int row, int col, int expectedCount)
+    public async Task CountLiveNeighbors_ShouldReturnNumberOfLiveNeighbors(int row, int col, int expectedCount)
     {
         // Arrange
-        var initial = new List<List<bool>>() // glinder
+        bool[][] initial = // glinder
         {
-            new() { true, true, true },
-            new() { true,  false,  false },
-            new() { false, true, false }
+            [true, true, true ],
+            [true, false, false ],
+            [false, true, false ]
         };
 
         // Act
-        int result = GameOfLifeService.CountLiveNeighbors(initial, row, col);
+        int result = await GameOfLifeService.CountLiveNeighbors(initial, row, col);
 
         // Assert
         result.Should().Be(expectedCount);
