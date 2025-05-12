@@ -1,6 +1,7 @@
 ﻿using Cel.GameOfLife.Application.Consts;
 using Cel.GameOfLife.Application.Services;
 using Cel.GameOfLife.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Cel.GameOfLife.ApplicationUnitTest.Services;
 
@@ -146,7 +147,7 @@ public class GameOfLifeServiceTests
     [InlineData(0, 1, 3)]
     [InlineData(1, 1, 5)]
     [InlineData(2, 2, 1)]
-    public void CountLiveNeighbors_ShouldReturnNumberOfLiveNeighbors(int row, int col, int expectedCount)
+    public async Task CountLiveNeighbors_ShouldReturnNumberOfLiveNeighbors(int row, int col, int expectedCount)
     {
         // Arrange
         var initial = new List<List<bool>>() // glinder
@@ -157,7 +158,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        int result = GameOfLifeService.CountLiveNeighbors(initial, row, col);
+        int result = await GameOfLifeService.CountLiveNeighbors(initial, row, col);
 
         // Assert
         result.Should().Be(expectedCount);

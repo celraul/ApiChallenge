@@ -74,12 +74,12 @@ public class GameOfLifeService : IGameOfLifeService
         for (int row = 0; row < rows; row++)
         {
             int currentRow = row;
-            rowTasks.Add(Task.Run(() =>
+            rowTasks.Add(Task.Run(async () =>
             {
                 var newRow = new List<bool>(cols);
                 for (int col = 0; col < cols; col++)
                 {
-                    int liveNeighbors = CountLiveNeighbors(currentState, currentRow, col);
+                    int liveNeighbors = await CountLiveNeighbors(currentState, currentRow, col);
 
                     // Apply the rules of the Game of Life
                     bool isAlive = currentState[currentRow][col];
@@ -101,7 +101,7 @@ public class GameOfLifeService : IGameOfLifeService
     /// <param name="board">To get size of board.</param>
     /// <param name="row">Row of current item (position).</param>
     /// <param name="col">Row of current item (position).</param>
-    public static int CountLiveNeighbors(List<List<bool>> board, int row, int col)
+    public static Task<int> CountLiveNeighbors(List<List<bool>> board, int row, int col)
     {
         int countOfLiveNeighbors = 0;
 
@@ -120,6 +120,6 @@ public class GameOfLifeService : IGameOfLifeService
             }
         }
 
-        return countOfLiveNeighbors;
+        return Task.FromResult(countOfLiveNeighbors);
     }
 }
