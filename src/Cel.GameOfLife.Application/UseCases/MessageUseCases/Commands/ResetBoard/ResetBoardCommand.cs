@@ -1,5 +1,6 @@
 ﻿using Cel.GameOfLife.Application.Interfaces;
 using Cel.GameOfLife.Domain.Entities;
+using Cel.GameOfLife.Domain.Exceptions;
 using MediatR;
 
 namespace Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.ResetBoard;
@@ -14,7 +15,7 @@ public class ResetBoardCommandHandler(IRepository<Board> repository)
     public async Task Handle(ResetBoardCommand request, CancellationToken cancellationToken)
     {
         Board board = await _repository.GetById(request.Id) ??
-            throw new KeyNotFoundException("Board not found.");
+            throw new NotFoundException("Board not found.");
 
         board.CurrentState = board.Field;
         await _repository.UpdateAsync(board);

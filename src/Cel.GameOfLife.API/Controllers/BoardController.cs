@@ -80,9 +80,9 @@ public class BoardController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="id">Id of board</param>
     /// <returns>last state of board</returns>
+    [CacheResponse]
     [HttpGet("{id}/finalState")]
     [ProducesResponseType(typeof(ApiResponse<List<List<bool>>>), StatusCodes.Status200OK)]
-    [CacheResponse]
     public async Task<ActionResult> GetFinalState(string id)
     {
         List<List<bool>> nextState = await _mediator.Send(new GetFinalStateQuery(id));
