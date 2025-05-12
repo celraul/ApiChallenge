@@ -24,9 +24,6 @@ jobs:
 
     - name: Build
       run: dotnet build src/Cel.GameOfLife.sln --no-restore --configuration Release
-
-    - name: Run unit tests
-      run: dotnet test /src/**/*UnitTest.csproj --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
   
     - name: Run unit tests with coverage
       run: |
