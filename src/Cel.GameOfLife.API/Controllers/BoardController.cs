@@ -1,3 +1,4 @@
+using Cel.GameOfLife.API.Attributes;
 using Cel.GameOfLife.API.Models;
 using Cel.GameOfLife.API.RequestsExamples;
 using Cel.GameOfLife.Application.Models;
@@ -38,7 +39,7 @@ public class BoardController(IMediator mediator) : ControllerBase
     /// <param name="id">Id of board</param>
     /// <returns>Returns board with the next state.</returns>
     [HttpPut("{id}/next")]
-    [ProducesResponseType(typeof(ApiResponse<BoardModel >), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id)
     {
         BoardModel nextState = await _mediator.Send(new GenerateNextStateCommand(id));
@@ -79,6 +80,7 @@ public class BoardController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="id">Id of board</param>
     /// <returns>last state of board</returns>
+    [CacheResponse]
     [HttpGet("{id}/finalState")]
     [ProducesResponseType(typeof(ApiResponse<List<List<bool>>>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetFinalState(string id)
