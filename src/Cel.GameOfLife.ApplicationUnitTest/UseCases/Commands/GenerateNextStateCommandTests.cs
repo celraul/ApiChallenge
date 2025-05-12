@@ -46,8 +46,6 @@ public class GenerateNextStateCommandTests
         BoardModel result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeNull(); // TO test CI
-
         result.Should().NotBeNull();
         result.CurrentState.Should().BeEquivalentTo(expected);
         result.Generation.Should().Be(2);
