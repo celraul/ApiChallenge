@@ -1,0 +1,57 @@
+name: Game of life CI
+
+on:
+  push:
+    branches: [ dev, main ] 
+  pull_request:
+    branches: [ "**" ]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x' 
+
+    - name: Restore dependencies
+      run: dotnet restore src/Cel.GameOfLife.sln
+
+    - name: Build
+      run: dotnet build src/Cel.GameOfLife.sln --no-restore --configuration Release
+  
+    - name: Run unit tests with coverage
+      run: |
+        mkdir -p game-of-life-api-unit-test-results/coverage
+        dotnet test src/**/*UnitTest.csproj \
+          --no-build \
+          --configuration Release \
+          --logger "trx;LogFileName=game-of-life-api-unit-test-results.trx" \
+          /p:CollectCoverage=true \
+          /p:CoverletOutput=./game-of-life-api-unit-test-results/coverage/ \
+          /p:CoverletOutputFormat=cobertura
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: src/Cel.GameOfLife.ApplicationUnitTest/TestResults/*.trx
+
+    - name: Report test results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Unit Tests Report results
+        path: src/Cel.GameOfLife.ApplicationUnitTest/TestResults/*.trx
+        reporter: dotnet-trx
