@@ -80,38 +80,6 @@ public class GameOfLifeServiceTests
     }
 
     [Fact]
-    public void NextState_ShouldReturnNextStateForBigOne2()
-    {
-        // Arrange
-        var initial = new List<List<bool>>();
-        var rand = new Random();
-        int size = 1000;
-
-        for (int i = 0; i < size; i++)
-        {
-            var row = new List<bool>();
-            for (int j = 0; j < size; j++)
-                row.Add(rand.Next(2) == 1);
-
-            initial.Add(row);
-        }
-
-        Board board = new()
-        {
-            Id = "boardId",
-            Name = "Name",
-            Field = initial,
-            CurrentState = initial
-        };
-
-        // Act
-        List<List<bool>> result = GameOfLifeService.GetNextState2(initial);
-
-        // Assert
-        result.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task FinalState_ShouldReturnTheFinalState()
     {
         // Arrange

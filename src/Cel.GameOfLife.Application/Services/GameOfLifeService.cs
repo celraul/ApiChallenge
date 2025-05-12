@@ -92,33 +92,6 @@ public class GameOfLifeService : IGameOfLifeService
         return next.ToList();
     }
 
-    // Just for performace test purposes
-    public static List<List<bool>> GetNextState2(List<List<bool>> currentState)
-    {
-        int rows = currentState.Count;
-        int cols = currentState[0].Count;
-
-        var next = new List<List<bool>>(rows);
-
-        for (int row = 0; row < rows; row++)
-        {
-            var newRow = new List<bool>(cols);
-            for (int col = 0; col < cols; col++)
-            {
-                int liveNeighbors = CountLiveNeighbors(currentState, row, col);
-
-                // Apply the rules of the Game of Life
-                bool isAlive = currentState[row][col];
-                bool nextState = isAlive ? (liveNeighbors == 2 || liveNeighbors == 3) :
-                                            (liveNeighbors == 3);
-                newRow.Add(nextState);
-            }
-            next.Add(newRow);
-        }
-
-        return next;
-    }
-
     /// <summary>
     /// It returns the number of live neighbors.
     /// </summary>
