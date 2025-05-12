@@ -2,7 +2,7 @@ name: Game of life CI
 
 on:
   push:
-    branches: [ "**" ] ## dev, main
+    branches: [ dev, main ] 
   pull_request:
     branches: [ "**" ]
 
@@ -42,10 +42,3 @@ jobs:
       with:
         name: test-results
         path: src/Cel.GameOfLife.ApplicationUnitTest/TestResults/*.trx
-
-    - name: Upload code coverage
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: code-coverage
-        path: src/Cel.GameOfLife.ApplicationUnitTest/TestResults/coverage.cobertura.xml
