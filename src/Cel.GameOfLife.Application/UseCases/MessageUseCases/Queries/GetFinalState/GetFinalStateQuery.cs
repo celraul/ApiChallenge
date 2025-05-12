@@ -5,9 +5,9 @@ using MediatR;
 
 namespace Cel.GameOfLife.Application.UseCases.MessageUseCases.Queries.GetNextState;
 
-public record GetFinalStateQuery(string Id) : IRequest<List<List<bool>>>;
+public record GetFinalStateQuery(string Id) : IRequest<bool[][]>;
 
-public class GetFinalStateQueryHandler : IRequestHandler<GetFinalStateQuery, List<List<bool>>>
+public class GetFinalStateQueryHandler : IRequestHandler<GetFinalStateQuery, bool[][]>
 {
     private readonly IRepository<Board> _repository;
     private readonly IGameOfLifeService _service;
@@ -18,7 +18,7 @@ public class GetFinalStateQueryHandler : IRequestHandler<GetFinalStateQuery, Lis
         _service = service;
     }
 
-    public async Task<List<List<bool>>> Handle(GetFinalStateQuery request, CancellationToken cancellationToken)
+    public async Task<bool[][]> Handle(GetFinalStateQuery request, CancellationToken cancellationToken)
     {
         Board board = await _repository.GetById(request.Id) ??
             throw new NotFoundException("Board not found.");

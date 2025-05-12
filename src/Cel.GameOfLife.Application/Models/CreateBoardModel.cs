@@ -3,5 +3,5 @@
 public class CreateBoardModel
 {
     public string Name { get; set; } = string.Empty;
-    public List<List<bool>> BoardState { get; set; } = [];
+    public bool[][] BoardState { get; set; } = [];
 }
