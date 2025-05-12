@@ -1,5 +1,6 @@
 ﻿using Cel.GameOfLife.Application.Interfaces;
 using Cel.GameOfLife.Domain.Entities;
+using Cel.GameOfLife.Domain.Exceptions;
 using MediatR;
 
 namespace Cel.GameOfLife.Application.UseCases.MessageUseCases.Queries.GetNextState;
@@ -20,7 +21,7 @@ public class GetFinalStateQueryHandler : IRequestHandler<GetFinalStateQuery, Lis
     public async Task<List<List<bool>>> Handle(GetFinalStateQuery request, CancellationToken cancellationToken)
     {
         Board board = await _repository.GetById(request.Id) ??
-            throw new KeyNotFoundException("Board not found.");
+            throw new NotFoundException("Board not found.");
 
         return await _service.FinalState(board.CurrentState);
     }
