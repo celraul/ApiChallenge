@@ -1,6 +1,7 @@
 ﻿using Cel.GameOfLife.Application.Consts;
 using Cel.GameOfLife.Application.Services;
 using Cel.GameOfLife.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Cel.GameOfLife.ApplicationUnitTest.Services;
 
@@ -80,38 +81,6 @@ public class GameOfLifeServiceTests
     }
 
     [Fact]
-    public void NextState_ShouldReturnNextStateForBigOne2()
-    {
-        // Arrange
-        var initial = new List<List<bool>>();
-        var rand = new Random();
-        int size = 1000;
-
-        for (int i = 0; i < size; i++)
-        {
-            var row = new List<bool>();
-            for (int j = 0; j < size; j++)
-                row.Add(rand.Next(2) == 1);
-
-            initial.Add(row);
-        }
-
-        Board board = new()
-        {
-            Id = "boardId",
-            Name = "Name",
-            Field = initial,
-            CurrentState = initial
-        };
-
-        // Act
-        List<List<bool>> result = GameOfLifeService.GetNextState2(initial);
-
-        // Assert
-        result.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task FinalState_ShouldReturnTheFinalState()
     {
         // Arrange
@@ -178,7 +147,7 @@ public class GameOfLifeServiceTests
     [InlineData(0, 1, 3)]
     [InlineData(1, 1, 5)]
     [InlineData(2, 2, 1)]
-    public void CountLiveNeighbors_ShouldReturnNumberOfLiveNeighbors(int row, int col, int expectedCount)
+    public async Task CountLiveNeighbors_ShouldReturnNumberOfLiveNeighbors(int row, int col, int expectedCount)
     {
         // Arrange
         var initial = new List<List<bool>>() // glinder
@@ -189,7 +158,7 @@ public class GameOfLifeServiceTests
         };
 
         // Act
-        int result = GameOfLifeService.CountLiveNeighbors(initial, row, col);
+        int result = await GameOfLifeService.CountLiveNeighbors(initial, row, col);
 
         // Assert
         result.Should().Be(expectedCount);

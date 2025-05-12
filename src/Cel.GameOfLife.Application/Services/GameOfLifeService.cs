@@ -21,6 +21,9 @@ namespace Cel.GameOfLife.Application.Services;
 /// </summary>
 public class GameOfLifeService : IGameOfLifeService
 {
+    private readonly int[] NumbersOfNeighborsToKeepAlive = [2, 3];
+    private readonly int NumbersOfNeighborsToWakeUp = 3;
+
     public async Task<List<List<bool>>> NextState(List<List<bool>> currentState, int rounds = 1)
     {
         for (int i = 0; i < rounds; i++)
@@ -71,17 +74,17 @@ public class GameOfLifeService : IGameOfLifeService
         for (int row = 0; row < rows; row++)
         {
             int currentRow = row;
-            rowTasks.Add(Task.Run(() =>
+            rowTasks.Add(Task.Run(async () =>
             {
                 var newRow = new List<bool>(cols);
                 for (int col = 0; col < cols; col++)
                 {
-                    int liveNeighbors = CountLiveNeighbors(currentState, currentRow, col);
+                    int liveNeighbors = await CountLiveNeighbors(currentState, currentRow, col);
 
                     // Apply the rules of the Game of Life
                     bool isAlive = currentState[currentRow][col];
-                    bool nextState = isAlive ? (liveNeighbors == 2 || liveNeighbors == 3) :
-                                                (liveNeighbors == 3);
+                    bool nextState = isAlive ? NumbersOfNeighborsToKeepAlive.Contains(liveNeighbors) :
+                                                liveNeighbors == NumbersOfNeighborsToWakeUp;
                     newRow.Add(nextState);
                 }
                 return newRow;
@@ -92,40 +95,13 @@ public class GameOfLifeService : IGameOfLifeService
         return next.ToList();
     }
 
-    // Just for performace test purposes
-    public static List<List<bool>> GetNextState2(List<List<bool>> currentState)
-    {
-        int rows = currentState.Count;
-        int cols = currentState[0].Count;
-
-        var next = new List<List<bool>>(rows);
-
-        for (int row = 0; row < rows; row++)
-        {
-            var newRow = new List<bool>(cols);
-            for (int col = 0; col < cols; col++)
-            {
-                int liveNeighbors = CountLiveNeighbors(currentState, row, col);
-
-                // Apply the rules of the Game of Life
-                bool isAlive = currentState[row][col];
-                bool nextState = isAlive ? (liveNeighbors == 2 || liveNeighbors == 3) :
-                                            (liveNeighbors == 3);
-                newRow.Add(nextState);
-            }
-            next.Add(newRow);
-        }
-
-        return next;
-    }
-
     /// <summary>
     /// It returns the number of live neighbors.
     /// </summary>
     /// <param name="board">To get size of board.</param>
     /// <param name="row">Row of current item (position).</param>
     /// <param name="col">Row of current item (position).</param>
-    public static int CountLiveNeighbors(List<List<bool>> board, int row, int col)
+    public static Task<int> CountLiveNeighbors(List<List<bool>> board, int row, int col)
     {
         int countOfLiveNeighbors = 0;
 
@@ -144,6 +120,6 @@ public class GameOfLifeService : IGameOfLifeService
             }
         }
 
-        return countOfLiveNeighbors;
+        return Task.FromResult(countOfLiveNeighbors);
     }
 }
