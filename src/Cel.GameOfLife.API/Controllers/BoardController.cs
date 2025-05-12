@@ -82,11 +82,11 @@ public class BoardController(IMediator mediator) : ControllerBase
     /// <returns>last state of board</returns>
     [CacheResponse]
     [HttpGet("{id}/finalState")]
-    [ProducesResponseType(typeof(ApiResponse<List<List<bool>>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<bool[][]>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetFinalState(string id)
     {
-        List<List<bool>> nextState = await _mediator.Send(new GetFinalStateQuery(id));
+        bool[][] nextState = await _mediator.Send(new GetFinalStateQuery(id));
 
-        return Ok(new ApiResponse<List<List<bool>>>(nextState));
+        return Ok(new ApiResponse<bool[][]>(nextState));
     }
 }
