@@ -18,6 +18,8 @@ public class ResetBoardCommandHandler(IRepository<Board> repository)
             throw new NotFoundException("Board not found.");
 
         board.CurrentState = board.Field;
+        board.Generation = default;
+
         await _repository.UpdateAsync(board);
     }
 }
