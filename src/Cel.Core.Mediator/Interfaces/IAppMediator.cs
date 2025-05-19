@@ -4,9 +4,7 @@ namespace Cel.Core.Mediator.Interfaces;
 
 public interface IAppMediator
 {
-    Task<Result<TResponse>> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
-        where TRequest : ICommand<TResponse>;
-
-    Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : ICommand;
-    Task<Result<TResponse>> Query<TQuery, TResponse>(TQuery request, CancellationToken cancellationToken = default) where TQuery : IQuery<TResponse>;
+    Task<Result<TResponse>> Send<TResponse>(ICommand<TResponse> request, CancellationToken cancellationToken = default);
+    Task Send(ICommand request, CancellationToken cancellationToken = default);
+    Task<Result<TResponse>> Query<TResponse>(IQuery<TResponse> request, CancellationToken cancellationToken = default);
 }

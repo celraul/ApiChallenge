@@ -1,5 +1,4 @@
 using Cel.Core.Mediator.Interfaces;
-using Cel.Core.Mediator.Models;
 using Cel.GameOfLife.API.Attributes;
 using Cel.GameOfLife.API.Models;
 using Cel.GameOfLife.API.RequestsExamples;
@@ -29,7 +28,7 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     [SwaggerRequestExample(typeof(CreateBoardModel), typeof(CreateBoardModelExample))]
     public async Task<ActionResult> Post([FromBody] CreateBoardModel board)
     {
-        var result = await _appMediator.Send<CreateBoardCommand, string>(new CreateBoardCommand(board));
+        var result = await _appMediator.Send(new CreateBoardCommand(board));
 
         if (result.IsFailure)
             return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
@@ -46,7 +45,7 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id)
     {
-        var result = await _appMediator.Send<GenerateNextStateCommand, BoardModel>(new GenerateNextStateCommand(id));
+        var result = await _appMediator.Send(new GenerateNextStateCommand(id));
 
         if (result.IsFailure)
             return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
@@ -64,7 +63,7 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id, int count)
     {
-        var result = await _appMediator.Send<GenerateNextStateCommand, BoardModel>(new GenerateNextStateCommand(id, count));
+        var result = await _appMediator.Send(new GenerateNextStateCommand(id, count));
 
         if (result.IsFailure)
             return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
@@ -95,7 +94,7 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<bool[][]>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetFinalState(string id)
     {
-        var result = await _appMediator.Query<GetFinalStateQuery, bool[][]>(new GetFinalStateQuery(id));
+        var result = await _appMediator.Query(new GetFinalStateQuery(id));
 
         if (result.IsFailure)
             return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });

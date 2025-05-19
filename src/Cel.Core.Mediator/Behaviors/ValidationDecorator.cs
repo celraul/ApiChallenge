@@ -41,6 +41,9 @@ internal static class ValidationDecorator
         return validationFailures;
     }
 
-    private static ValidationError CreateValidationError(ValidationFailure[] validationFailures) =>
-        new(validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray());
+    private static ValidationError CreateValidationError(ValidationFailure[] validationFailures)
+    {
+        Error[] errors = validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray();
+        return new(errors);
+    }
 }

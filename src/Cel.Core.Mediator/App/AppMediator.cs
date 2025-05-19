@@ -8,39 +8,42 @@ public class AppMediator(IServiceProvider serviceProvider) : IAppMediator
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider;
 
-    public async Task<Result<TResponse>> Send<TQuery, TResponse>(TQuery request, CancellationToken cancellationToken = default)
-        where TQuery : ICommand<TResponse>
+    public async Task<Result<TResponse>> Send<TResponse>(ICommand<TResponse> request, CancellationToken cancellationToken = default)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var handler = scope.ServiceProvider
-                          .GetRequiredService<ICommandHandler<TQuery, TResponse>>();
+        var commandType = request.GetType();
+        var handlerType = typeof(ICommandHandler<,>).MakeGenericType(commandType, typeof(TResponse));
 
-        Result<TResponse> result = await handler.Handle(request, cancellationToken);
+        dynamic handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+        Result<TResponse> result = await handler.Handle((dynamic)request, cancellationToken);
 
         return result;
     }
 
-    public async Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default)
-         where TRequest : ICommand
+    public async Task Send(ICommand request, CancellationToken cancellationToken = default)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var handler = scope.ServiceProvider
-                          .GetRequiredService<ICommandHandler<TRequest>>();
+        var commandType = request.GetType();
+        var handlerType = typeof(ICommandHandler<>).MakeGenericType(commandType);
 
-        await handler.Handle(request, cancellationToken);
+        dynamic handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+        await handler.Handle((dynamic)request, cancellationToken);
     }
 
-    public async Task<Result<TResponse>> Query<TQuery, TResponse>(TQuery request, CancellationToken cancellationToken = default)
-        where TQuery : IQuery<TResponse>
+    public async Task<Result<TResponse>> Query<TResponse>(IQuery<TResponse> request, CancellationToken cancellationToken = default)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var handler = scope.ServiceProvider
-                          .GetRequiredService<IQueryHandler<TQuery, TResponse>>();
+        var commandType = request.GetType();
+        var handlerType = typeof(IQueryHandler<,>).MakeGenericType(commandType, typeof(TResponse));
 
-        Result<TResponse> result = await handler.Handle(request, cancellationToken);
+        dynamic handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+        Result<TResponse> result = await handler.Handle((dynamic)request, cancellationToken);
         return result;
     }
 }
