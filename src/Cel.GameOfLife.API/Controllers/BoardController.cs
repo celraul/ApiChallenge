@@ -14,7 +14,7 @@ namespace Cel.GameOfLife.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BoardController(IAppMediator appMediator) : ControllerBase
+public class BoardController(IAppMediator appMediator) : BaseController
 {
     private readonly IAppMediator _appMediator = appMediator;
 
@@ -29,11 +29,7 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     public async Task<ActionResult> Post([FromBody] CreateBoardModel board)
     {
         var result = await _appMediator.Send(new CreateBoardCommand(board));
-
-        if (result.IsFailure)
-            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
-
-        return Ok(new ApiResponse<string>(result.Value));
+        return HandleResult(result);
     }
 
     /// <summary>
@@ -46,11 +42,7 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     public async Task<ActionResult> Put(string id)
     {
         var result = await _appMediator.Send(new GenerateNextStateCommand(id));
-
-        if (result.IsFailure)
-            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
-
-        return Ok(new ApiResponse<BoardModel>(result.Value));
+        return HandleResult(result);
     }
 
     /// <summary>
@@ -64,11 +56,7 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     public async Task<ActionResult> Put(string id, int count)
     {
         var result = await _appMediator.Send(new GenerateNextStateCommand(id, count));
-
-        if (result.IsFailure)
-            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
-
-        return Ok(new ApiResponse<BoardModel>(result.Value));
+        return HandleResult(result);
     }
 
     /// <summary>
@@ -95,10 +83,6 @@ public class BoardController(IAppMediator appMediator) : ControllerBase
     public async Task<ActionResult> GetFinalState(string id)
     {
         var result = await _appMediator.Query(new GetFinalStateQuery(id));
-
-        if (result.IsFailure)
-            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
-
-        return Ok(new ApiResponse<bool[][]>(result.Value));
+        return HandleResult(result);
     }
 }
