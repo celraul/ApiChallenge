@@ -1,8 +1,7 @@
 using Cel.Core.Mediator.Interfaces;
-using Cel.Core.Mediator.Models;
 using Cel.GameOfLife.API.Attributes;
 using Cel.GameOfLife.API.Models;
-using Cel.GameOfLife.API.RequestsExamples;
+using Cel.GameOfLife.API.Swagger.RequestsExamples;
 using Cel.GameOfLife.Application.Models;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.CreateBoard;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.GenerateNextState;
@@ -14,7 +13,8 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Cel.GameOfLife.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
 public class BoardController(IAppMediator appMediator) : BaseController
 {
     private readonly IAppMediator _appMediator = appMediator;
@@ -81,6 +81,20 @@ public class BoardController(IAppMediator appMediator) : BaseController
     [HttpGet("{id}/finalState")]
     [ProducesResponseType(typeof(ApiResponse<bool[][]>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetFinalState(string id)
+    {
+        var result = await _appMediator.Query(new GetFinalStateQuery(id));
+        return HandleResult(result);
+    }
+
+    /// <summary>
+    /// It returns the last state of the board V2.
+    /// </summary>
+    /// <param name="id">Id of board</param>
+    /// <returns>last state of board</returns>
+    [ApiVersion("2.0")]
+    [HttpGet("{id}/finalState")]
+    [ProducesResponseType(typeof(ApiResponse<bool[][]>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetFinalStateV2(string id)
     {
         var result = await _appMediator.Query(new GetFinalStateQuery(id));
         return HandleResult(result);

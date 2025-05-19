@@ -4,8 +4,6 @@ using Cel.GameOfLife.API.Middlewares;
 using Cel.GameOfLife.API.Extensions;
 using Cel.GameOfLife.API.ActionFilters;
 using Cel.GameOfLife.API.Conventions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Cel.GameOfLife.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,8 +45,7 @@ app.UseCors("CorsPolicy");
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment()) { }
-app.UseSwagger();
-app.UseSwaggerUI();
+app.ConfigureSwaggerUI();
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
