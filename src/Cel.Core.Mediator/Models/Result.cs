@@ -21,10 +21,16 @@ public class Result
     public static Result<TValue> Success<TValue>(TValue value) =>
         new(value, true, []);
 
+    public static Result Failure(Error error) =>
+        new(false, [error]);
+
     public static Result Failure(Error[] errors) => new(false, errors);
 
-    public static Result<TValue> Failure<TValue>(Error[] errors) =>
+    public static Result<TValue> Failures<TValue>(Error[] errors) =>
         new(default, false, errors);
+
+    public static Result<TValue> Failure<TValue>(Error error) =>
+        new(default, false, [error]);
 }
 
 public class Result<TValue> : Result
@@ -43,7 +49,7 @@ public class Result<TValue> : Result
         : throw new InvalidOperationException("The value of a failure result can't be accessed.");
 
     public static implicit operator Result<TValue>(TValue? value) =>
-        value is not null ? Success(value) : Failure<TValue>([]);
+        value is not null ? Success(value) : Failures<TValue>([]);
 
     public static Result<TValue> ValidationFailure(Error[] errors) =>
         new(default, false, errors);

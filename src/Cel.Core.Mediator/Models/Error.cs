@@ -4,6 +4,7 @@ namespace Cel.Core.Mediator.Models;
 
 public record Error
 {
+    private const string DefaultErrorCode = "000";
     public static readonly Error None = new(string.Empty, string.Empty, ErrorType.Failure);
     public static readonly Error NullValue = new(
         "General.Null",
@@ -23,15 +24,18 @@ public record Error
 
     public ErrorType Type { get; }
 
-    public static Error Failure(string code, string description) =>
+    public static Error Validation(string description, string code = DefaultErrorCode) =>
+        new(code, description, ErrorType.Validation);
+
+    public static Error Failure(string description, string code = DefaultErrorCode) =>
         new(code, description, ErrorType.Failure);
 
-    public static Error NotFound(string code, string description) =>
+    public static Error NotFound(string description, string code = DefaultErrorCode) =>
         new(code, description, ErrorType.NotFound);
 
-    public static Error Problem(string code, string description) =>
+    public static Error Problem(string description, string code = DefaultErrorCode) =>
         new(code, description, ErrorType.Problem);
 
-    public static Error Conflict(string code, string description) =>
+    public static Error Conflict(string description, string code = DefaultErrorCode) =>
         new(code, description, ErrorType.Conflict);
 }

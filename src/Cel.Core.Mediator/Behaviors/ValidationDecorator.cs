@@ -10,7 +10,7 @@ internal static class ValidationDecorator
     internal sealed class CommandHandler<TCommand, TResponse>(ICommandHandler<TCommand, TResponse> innerHandler, IEnumerable<IValidator<TCommand>> validators)
         : ICommandHandler<TCommand, TResponse> where TCommand : ICommand<TResponse>
     {
-        public async Task<Result<TResponse>> Handle(TCommand command, CancellationToken cancellationToken)
+        public async Task<TResponse> Handle(TCommand command, CancellationToken cancellationToken)
         {
             ValidationFailure[] validationFailures = await ValidateAsync(command, validators);
 
@@ -19,7 +19,28 @@ internal static class ValidationDecorator
 
             Error[] errors = CreateValidationError(validationFailures);
 
-            return Result.Failure<TResponse>(errors);
+            var responseType = typeof(TResponse);
+            if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+                return ReponseAsResultPattern(errors, responseType);
+
+            throw new ValidationException("Validation failed", validationFailures);
+        }
+
+        private static TResponse ReponseAsResultPattern(Error[] errors, Type responseType)
+        {
+            Type innerType = responseType.GetGenericArguments()[0];
+
+            // Call Result.Failure<innerType>(errors) via reflection
+            var method = typeof(Result)
+                .GetMethod(nameof(Result.Failures))
+                ?.MakeGenericMethod(innerType);
+
+            if (method == null)
+                throw new InvalidOperationException("Result.Failure<T> method not found.");
+
+            var result = method.Invoke(null, [errors]); // null for static method
+
+            return (TResponse)result!;
         }
     }
 
@@ -42,5 +63,5 @@ internal static class ValidationDecorator
     }
 
     private static Error[] CreateValidationError(ValidationFailure[] validationFailures)
-        => validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray();
+        => validationFailures.Select(f => Error.Validation(f.ErrorMessage, f.ErrorCode)).ToArray();
 }

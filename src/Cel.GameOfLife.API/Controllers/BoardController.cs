@@ -1,4 +1,5 @@
 using Cel.Core.Mediator.Interfaces;
+using Cel.Core.Mediator.Models;
 using Cel.GameOfLife.API.Attributes;
 using Cel.GameOfLife.API.Models;
 using Cel.GameOfLife.API.RequestsExamples;
@@ -64,12 +65,11 @@ public class BoardController(IAppMediator appMediator) : BaseController
     /// </summary>
     /// <param name="id">Id of board</param>
     [HttpPut("{id}/reset")]
-    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Reset(string id)
     {
-        await _appMediator.Send(new ResetBoardCommand(id));
-
-        return Ok(new ApiResponse<bool>(true));
+        var result = await _appMediator.Send(new ResetBoardCommand(id));
+        return HandleResult(result);
     }
 
     /// <summary>

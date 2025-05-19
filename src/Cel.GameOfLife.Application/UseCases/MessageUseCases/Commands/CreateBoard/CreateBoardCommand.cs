@@ -6,9 +6,9 @@ using Cel.GameOfLife.Domain.Entities;
 
 namespace Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.CreateBoard;
 
-public record CreateBoardCommand(CreateBoardModel BoardModel) : ICommand<string> { }
+public record CreateBoardCommand(CreateBoardModel BoardModel) : ICommand<Result<string>> { }
 
-public class CreateBoardCommandHandler(IRepository<Board> repository) : ICommandHandler<CreateBoardCommand, string>
+public class CreateBoardCommandHandler(IRepository<Board> repository) : ICommandHandler<CreateBoardCommand, Result<string>>
 {
     private readonly IRepository<Board> _repository = repository;
 
