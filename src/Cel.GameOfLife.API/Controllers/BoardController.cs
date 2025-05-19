@@ -1,3 +1,5 @@
+using Cel.Core.Mediator.Interfaces;
+using Cel.Core.Mediator.Models;
 using Cel.GameOfLife.API.Attributes;
 using Cel.GameOfLife.API.Models;
 using Cel.GameOfLife.API.RequestsExamples;
@@ -6,7 +8,6 @@ using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.CreateBoard;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.GenerateNextState;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.ResetBoard;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Queries.GetNextState;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -14,9 +15,9 @@ namespace Cel.GameOfLife.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BoardController(IMediator mediator) : ControllerBase
+public class BoardController(IAppMediator appMediator) : ControllerBase
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IAppMediator _appMediator = appMediator;
 
     /// <summary>
     /// It creates a new board setting the initial state.
@@ -28,9 +29,12 @@ public class BoardController(IMediator mediator) : ControllerBase
     [SwaggerRequestExample(typeof(CreateBoardModel), typeof(CreateBoardModelExample))]
     public async Task<ActionResult> Post([FromBody] CreateBoardModel board)
     {
-        string boardId = await _mediator.Send(new CreateBoardCommand(board));
+        var result = await _appMediator.Send<CreateBoardCommand, string>(new CreateBoardCommand(board));
 
-        return Ok(new ApiResponse<string>(boardId));
+        if (result.IsFailure)
+            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
+
+        return Ok(new ApiResponse<string>(result.Value));
     }
 
     /// <summary>
@@ -42,9 +46,12 @@ public class BoardController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id)
     {
-        BoardModel nextState = await _mediator.Send(new GenerateNextStateCommand(id));
+        var result = await _appMediator.Send<GenerateNextStateCommand, BoardModel>(new GenerateNextStateCommand(id));
 
-        return Ok(new ApiResponse<BoardModel>(nextState));
+        if (result.IsFailure)
+            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
+
+        return Ok(new ApiResponse<BoardModel>(result.Value));
     }
 
     /// <summary>
@@ -57,9 +64,12 @@ public class BoardController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id, int count)
     {
-        BoardModel nextState = await _mediator.Send(new GenerateNextStateCommand(id, count));
+        var result = await _appMediator.Send<GenerateNextStateCommand, BoardModel>(new GenerateNextStateCommand(id, count));
 
-        return Ok(new ApiResponse<BoardModel>(nextState));
+        if (result.IsFailure)
+            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
+
+        return Ok(new ApiResponse<BoardModel>(result.Value));
     }
 
     /// <summary>
@@ -70,7 +80,7 @@ public class BoardController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Reset(string id)
     {
-        await _mediator.Send(new ResetBoardCommand(id));
+        await _appMediator.Send(new ResetBoardCommand(id));
 
         return Ok(new ApiResponse<bool>(true));
     }
@@ -85,8 +95,11 @@ public class BoardController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<bool[][]>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetFinalState(string id)
     {
-        bool[][] nextState = await _mediator.Send(new GetFinalStateQuery(id));
+        var result = await _appMediator.Query<GetFinalStateQuery, bool[][]>(new GetFinalStateQuery(id));
 
-        return Ok(new ApiResponse<bool[][]>(nextState));
+        if (result.IsFailure)
+            return BadRequest(new ApiResponse<string>() { errors = result.Errors.Select(e => e.Description).ToList() });
+
+        return Ok(new ApiResponse<bool[][]>(result.Value));
     }
 }
