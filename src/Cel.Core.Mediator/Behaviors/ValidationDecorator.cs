@@ -17,9 +17,9 @@ internal static class ValidationDecorator
             if (validationFailures.Length == 0)
                 return await innerHandler.Handle(command, cancellationToken);
 
-            ValidationError validationError = CreateValidationError(validationFailures);
+            Error[] errors = CreateValidationError(validationFailures);
 
-            return Result.Failure<TResponse>(validationError.Errors.ToList());
+            return Result.Failure<TResponse>(errors);
         }
     }
 
@@ -41,9 +41,6 @@ internal static class ValidationDecorator
         return validationFailures;
     }
 
-    private static ValidationError CreateValidationError(ValidationFailure[] validationFailures)
-    {
-        Error[] errors = validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray();
-        return new(errors);
-    }
+    private static Error[] CreateValidationError(ValidationFailure[] validationFailures)
+        => validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage)).ToArray();
 }
