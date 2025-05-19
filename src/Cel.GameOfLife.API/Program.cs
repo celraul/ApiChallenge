@@ -27,10 +27,10 @@ builder.Services.AddControllers(options =>
 
     // default response type for the documentation.
     options.Conventions.Add(new MultipleProducesResponseTypeConvention(
-        (StatusCodes.Status400BadRequest, typeof(ApiResponse<string>)),
-        (StatusCodes.Status401Unauthorized, typeof(ApiResponse<string>)),
-        (StatusCodes.Status404NotFound, typeof(ApiResponse<string>)),
-        (StatusCodes.Status500InternalServerError, typeof(ApiResponse<string>))
+        (StatusCodes.Status400BadRequest, typeof(ApiResponse<bool>)),
+        (StatusCodes.Status401Unauthorized, typeof(ApiResponse<bool>)),
+        (StatusCodes.Status404NotFound, typeof(ApiResponse<bool>)),
+        (StatusCodes.Status500InternalServerError, typeof(ApiResponse<bool>))
     ));
 });
 
