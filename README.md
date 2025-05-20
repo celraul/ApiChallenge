@@ -9,16 +9,23 @@ A .NET 9 Web API implementation of Conway's Game of Life. This API allows to cre
 
 
 
-
 ## 📦 Technologies
 - .NET 9
 - C#
+- Clean architecture
 - Rest Web API
 - Mongo
+- in-memory
 - Docker
 - Swagger (OpenAPI)
-- xUnit
+- xUnit (unit tests)
 - CQRS
+- K6
+
+## 📦 Design patterns
+- Mediator
+- Chain of Responsibility
+- Decorator
 
 ##  📖 Conway’s Game of Life Rules
 - Any live cell with two or three live neighbours survives.
@@ -57,4 +64,16 @@ samples to create a board:
 		]
 	]
 }
+```
+
+## k6 to test API performance
+
+Install K6 using chocolatey
+```bash
+choco install k6
+```
+
+Use the command below to generate performance results in the performance-tests folder.
+```bash
+k6 run GET-FinalState-.js
 ```
