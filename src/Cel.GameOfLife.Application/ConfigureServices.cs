@@ -1,8 +1,6 @@
-﻿using Cel.GameOfLife.Application.Behaviors;
+﻿using Cel.Core.Mediator;
 using Cel.GameOfLife.Application.Interfaces;
 using Cel.GameOfLife.Application.Services;
-using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -29,15 +27,7 @@ public static class ConfigureServices
 
     private static IServiceCollection AddMediator(this IServiceCollection services, Assembly assembly)
     {
-        services.AddMediatR(x =>
-        {
-            x.RegisterServicesFromAssembly(assembly);
-        });
-
-        services.AddValidatorsFromAssembly(assembly);
-
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
+        services.AddAppMediator(assembly);
         return services;
     }
 }

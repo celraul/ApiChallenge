@@ -1,0 +1,57 @@
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Cel.Core.Mediator.Models;
+
+public class Result
+{
+    public Result(bool isSuccess, Error[] error)
+    {
+        IsSuccess = isSuccess;
+        Errors = error;
+    }
+
+    public bool IsSuccess { get; }
+
+    public bool IsFailure => !IsSuccess;
+
+    public Error[] Errors { get; }
+
+    public static Result Success() => new(true, []);
+
+    public static Result<TValue> Success<TValue>(TValue value) =>
+        new(value, true, []);
+
+    public static Result Failure(Error error) =>
+        new(false, [error]);
+
+    public static Result Failure(Error[] errors) => new(false, errors);
+
+    public static Result<TValue> Failures<TValue>(Error[] errors) =>
+        new(default, false, errors);
+
+    public static Result<TValue> Failure<TValue>(Error error) =>
+        new(default, false, [error]);
+}
+
+public class Result<TValue> : Result
+{
+    private readonly TValue? _value;
+
+    public Result(TValue? value, bool isSuccess, Error[] errors)
+        : base(isSuccess, errors)
+    {
+        _value = value;
+    }
+
+    [NotNull]
+    public TValue Value => IsSuccess
+        ? _value!
+        : throw new InvalidOperationException("The value of a failure result can't be accessed.");
+
+    public static implicit operator Result<TValue>(TValue? value) =>
+        value is not null ? Success(value) : Failures<TValue>([]);
+
+    public static Result<TValue> ValidationFailure(Error[] errors) =>
+        new(default, false, errors);
+}
+
