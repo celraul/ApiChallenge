@@ -2,6 +2,7 @@
 using Cel.GameOfLife.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
+using FluentValidation;
 
 namespace Cel.GameOfLife.API.Middlewares;
 
@@ -34,6 +35,9 @@ public class ErrorHandlerMiddleware
         switch (exception)
         {
             case ValidationException:
+                apiResponse.errors = ((ValidationException)exception).Errors.Select(x => x.ErrorMessage).ToList();
+                break;
+            case AppValidationException:
                 apiResponse.errors = ((BaseException)exception).Errors;
                 break;
             case NotFoundException:
@@ -41,6 +45,7 @@ public class ErrorHandlerMiddleware
                 apiResponse.errors = ((BaseException)exception).Errors;
                 break;
             default:
+                apiResponse.errors = [exception.Message];
                 break;
         }
 

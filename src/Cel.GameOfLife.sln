@@ -20,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.GameOfLife.ApplicationUnitTest", "Cel.GameOfLife.ApplicationUnitTest\Cel.GameOfLife.ApplicationUnitTest.csproj", "{FC53706F-A7AD-4FF6-929F-F2DA557E5798}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "crosscutting", "crosscutting", "{0EC3E77A-7D1D-4445-BF72-FEF429F4205D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.Core.Mediator", "Cel.Core.Mediator\Cel.Core.Mediator.csproj", "{8F2B96FF-8B57-41D1-AAE8-66D81E329BAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,12 +50,17 @@ Global
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F2B96FF-8B57-41D1-AAE8-66D81E329BAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F2B96FF-8B57-41D1-AAE8-66D81E329BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F2B96FF-8B57-41D1-AAE8-66D81E329BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F2B96FF-8B57-41D1-AAE8-66D81E329BAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FC53706F-A7AD-4FF6-929F-F2DA557E5798} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8F2B96FF-8B57-41D1-AAE8-66D81E329BAF} = {0EC3E77A-7D1D-4445-BF72-FEF429F4205D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {160137E4-32F1-4694-A36A-445806AA8741}

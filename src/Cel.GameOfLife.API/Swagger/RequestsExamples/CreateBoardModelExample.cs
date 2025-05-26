@@ -1,7 +1,7 @@
 ﻿using Cel.GameOfLife.Application.Models;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace Cel.GameOfLife.API.RequestsExamples;
+namespace Cel.GameOfLife.API.Swagger.RequestsExamples;
 
 public class CreateBoardModelExample : IExamplesProvider<CreateBoardModel>
 {

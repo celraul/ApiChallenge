@@ -1,22 +1,23 @@
+using Cel.Core.Mediator.Interfaces;
 using Cel.GameOfLife.API.Attributes;
 using Cel.GameOfLife.API.Models;
-using Cel.GameOfLife.API.RequestsExamples;
+using Cel.GameOfLife.API.Swagger.RequestsExamples;
 using Cel.GameOfLife.Application.Models;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.CreateBoard;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.GenerateNextState;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.ResetBoard;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Queries.GetNextState;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Cel.GameOfLife.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class BoardController(IMediator mediator) : ControllerBase
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
+public class BoardController(IAppMediator appMediator) : BaseController
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IAppMediator _appMediator = appMediator;
 
     /// <summary>
     /// It creates a new board setting the initial state.
@@ -28,9 +29,8 @@ public class BoardController(IMediator mediator) : ControllerBase
     [SwaggerRequestExample(typeof(CreateBoardModel), typeof(CreateBoardModelExample))]
     public async Task<ActionResult> Post([FromBody] CreateBoardModel board)
     {
-        string boardId = await _mediator.Send(new CreateBoardCommand(board));
-
-        return Ok(new ApiResponse<string>(boardId));
+        var result = await _appMediator.Send(new CreateBoardCommand(board));
+        return HandleResult(result);
     }
 
     /// <summary>
@@ -42,9 +42,8 @@ public class BoardController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id)
     {
-        BoardModel nextState = await _mediator.Send(new GenerateNextStateCommand(id));
-
-        return Ok(new ApiResponse<BoardModel>(nextState));
+        var result = await _appMediator.Send(new GenerateNextStateCommand(id));
+        return HandleResult(result);
     }
 
     /// <summary>
@@ -57,9 +56,8 @@ public class BoardController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<BoardModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Put(string id, int count)
     {
-        BoardModel nextState = await _mediator.Send(new GenerateNextStateCommand(id, count));
-
-        return Ok(new ApiResponse<BoardModel>(nextState));
+        var result = await _appMediator.Send(new GenerateNextStateCommand(id, count));
+        return HandleResult(result);
     }
 
     /// <summary>
@@ -67,12 +65,11 @@ public class BoardController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="id">Id of board</param>
     [HttpPut("{id}/reset")]
-    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Reset(string id)
     {
-        await _mediator.Send(new ResetBoardCommand(id));
-
-        return Ok(new ApiResponse<bool>(true));
+        var result = await _appMediator.Send(new ResetBoardCommand(id));
+        return HandleResult(result);
     }
 
     /// <summary>
@@ -85,8 +82,21 @@ public class BoardController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<bool[][]>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetFinalState(string id)
     {
-        bool[][] nextState = await _mediator.Send(new GetFinalStateQuery(id));
+        var result = await _appMediator.Query(new GetFinalStateQuery(id));
+        return HandleResult(result);
+    }
 
-        return Ok(new ApiResponse<bool[][]>(nextState));
+    /// <summary>
+    /// It returns the last state of the board V2.
+    /// </summary>
+    /// <param name="id">Id of board</param>
+    /// <returns>last state of board</returns>
+    [ApiVersion("2.0")]
+    [HttpGet("{id}/finalState")]
+    [ProducesResponseType(typeof(ApiResponse<bool[][]>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetFinalStateV2(string id)
+    {
+        var result = await _appMediator.Query(new GetFinalStateQuery(id));
+        return HandleResult(result);
     }
 }

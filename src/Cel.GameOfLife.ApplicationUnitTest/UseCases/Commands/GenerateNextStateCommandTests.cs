@@ -1,4 +1,5 @@
-﻿using Cel.GameOfLife.Application.Interfaces;
+﻿using Cel.Core.Mediator.Models;
+using Cel.GameOfLife.Application.Interfaces;
 using Cel.GameOfLife.Application.Models;
 using Cel.GameOfLife.Application.UseCases.MessageUseCases.Commands.GenerateNextState;
 using Cel.GameOfLife.Domain.Entities;
@@ -43,12 +44,13 @@ public class GenerateNextStateCommandTests
         _gameOfLifeService.Setup(x => x.NextState(initial, 1)).ReturnsAsync(expected);
 
         // Act
-        BoardModel result = await _handler.Handle(command, CancellationToken.None);
+        Result<BoardModel> result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
-        result.CurrentState.Should().BeEquivalentTo(expected);
-        result.Generation.Should().Be(2);
+        result.Value.Should().NotBeNull();
+        result.Value.CurrentState.Should().BeEquivalentTo(expected);
+        result.Value.Generation.Should().Be(2);
 
         _gameOfLifeService.Verify(x => x.NextState(initial, 1), Times.Once);
     }
